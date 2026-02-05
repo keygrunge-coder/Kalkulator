@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator Sekarofficial</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+body{font-family:Arial;background:#f2f2f2;margin:0;padding:14px}
+.card{background:#fff;padding:16px;border-radius:14px}
+h1{text-align:center;font-size:18px;margin-bottom:14px}
+input{width:100%;padding:10px;margin:6px 0 10px;font-size:15px}
+.check{display:flex;gap:8px;align-items:center;margin:6px 0}
+.hasil{margin-top:14px;background:#f7f7f7;padding:12px;border-radius:10px}
+</style>
+</head>
+
+<body>
+<div class="card">
+
+<h1>Kalkulator Sekarofficial</h1>
+
+Modal (Rp)
+<input type="number" id="modal" value="20000">
+
+Target Untung %
+<input type="number" id="untung" value="20">
+
+Admin %
+<input type="number" id="admin" value="9">
+
+Ongkir %
+<input type="number" id="ongkir" value="4">
+
+Affiliate / AMS %
+<input type="number" id="affiliate" value="0">
+
+<div class="check">
+<input type="checkbox" id="promo"> Promo Extra 4.5%
+</div>
+
+Proses Pesanan (flat)
+<input type="number" id="proses" value="1250">
+
+<div class="check">
+<input type="checkbox" id="hemat" checked> Hemat Kirim 350
+</div>
+
+<div class="hasil" id="hasil"></div>
+
+</div>
+
+<script>
+let inputs=document.querySelectorAll("input");
+inputs.forEach(i=>i.addEventListener("input",hitung));
+
+function v(id){return +document.getElementById(id).value||0}
+
+function hitung(){
+ let modal=v("modal");
+ let untung=v("untung");
+ let admin=v("admin");
+ let ongkir=v("ongkir");
+ let affiliate=v("affiliate");
+
+ let promo=document.getElementById("promo").checked?4.5:0;
+ let flat=v("proses")+(document.getElementById("hemat").checked?350:0);
+
+ let persen=admin+ongkir+affiliate+promo;
+ let sisa=100-untung-persen;
+
+ if(sisa<=0){hasil.innerHTML="Persentase tidak valid";return;}
+
+ let harga=(modal+flat)/(sisa/100);
+ let untungRp=harga*untung/100;
+ let roas=harga/untungRp;
+
+ hasil.innerHTML=
+ `Harga Jual: Rp ${Math.round(harga).toLocaleString()}<br>
+  Untung: Rp ${Math.round(untungRp).toLocaleString()}<br>
+  ROAS BEP: ${roas.toFixed(2)}x`;
+}
+
+hitung();
+
+if("serviceWorker"in navigator){
+ navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>
