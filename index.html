@@ -8,12 +8,52 @@
 <link rel="manifest" href="manifest.json">
 
 <style>
-body{font-family:Arial;background:#f2f2f2;margin:0;padding:14px}
-.card{background:#fff;padding:16px;border-radius:14px}
-h1{text-align:center;font-size:18px;margin-bottom:14px}
-input{width:100%;padding:10px;margin:6px 0 10px;font-size:15px}
-.check{display:flex;gap:8px;align-items:center;margin:6px 0}
-.hasil{margin-top:14px;background:#f7f7f7;padding:12px;border-radius:10px}
+body{
+  font-family:Arial;
+  background:#f2f2f2;
+  margin:0;
+  padding:14px
+}
+
+.card{
+  background:#fff;
+  padding:16px;
+  border-radius:14px
+}
+
+h1{
+  text-align:center;
+  font-size:18px;
+  margin-bottom:14px
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:6px 0 10px;
+  font-size:15px
+}
+
+.check{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  margin:6px 0
+}
+
+.hasil{
+  margin-top:14px;
+  background:#f7f7f7;
+  padding:12px;
+  border-radius:10px;
+  line-height:1.6
+}
+
+.bersih{
+  color:green;
+  font-weight:bold;
+  font-size:16px
+}
 </style>
 </head>
 
@@ -56,9 +96,12 @@ Proses Pesanan (flat)
 let inputs=document.querySelectorAll("input");
 inputs.forEach(i=>i.addEventListener("input",hitung));
 
-function v(id){return +document.getElementById(id).value||0}
+function v(id){
+  return +document.getElementById(id).value||0
+}
 
 function hitung(){
+
  let modal=v("modal");
  let untung=v("untung");
  let admin=v("admin");
@@ -69,18 +112,32 @@ function hitung(){
  let flat=v("proses")+(document.getElementById("hemat").checked?350:0);
 
  let persen=admin+ongkir+affiliate+promo;
+
  let sisa=100-untung-persen;
 
- if(sisa<=0){hasil.innerHTML="Persentase tidak valid";return;}
+ if(sisa<=0){
+   hasil.innerHTML="Persentase tidak valid";
+   return;
+ }
 
  let harga=(modal+flat)/(sisa/100);
- let untungRp=harga*untung/100;
+
+ let potonganPersen=harga*persen/100;
+ let totalPotongan=potonganPersen+flat;
+
+ let uangDiterima=harga-totalPotongan;
+
+ let untungRp=uangDiterima-modal;
+
  let roas=harga/untungRp;
 
  hasil.innerHTML=
  `Harga Jual: Rp ${Math.round(harga).toLocaleString()}<br>
-  Untung: Rp ${Math.round(untungRp).toLocaleString()}<br>
+  Total Potongan: Rp ${Math.round(totalPotongan).toLocaleString()}<br>
+  <span class="bersih">Uang Diterima: Rp ${Math.round(uangDiterima).toLocaleString()}</span><br>
+  Untung Bersih: Rp ${Math.round(untungRp).toLocaleString()}<br>
   ROAS BEP: ${roas.toFixed(2)}x`;
+
 }
 
 hitung();
